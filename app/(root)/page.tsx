@@ -1,6 +1,8 @@
 // import { auth, signOut } from "@/auth";
 import Link from "next/link";
 
+import QuestionCard from "@/components/cards/QuestionCard";
+import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
@@ -53,16 +55,22 @@ interface SearchParams {
 const Home = async ({ searchParams }: SearchParams) => {
   // const session = await auth();
   // console.log(session);
-  const { query = "" } = await searchParams;
+  const { query = "", filter = "" } = await searchParams;
   // const { data } = await axios.get(
   //   `${process.env.NEXT_PUBLIC_API_URL}/api/questions`,
   //   {
   //     query: {search: query}
   //   }
   // );
-  const filteredQuestions = questions.filter((question) =>
-    question.title.toLowerCase().includes(query?.toLowerCase())
-  );
+  const filteredQuestions = questions.filter((question) => {
+    const matchesQuery = question.title
+      .toLowerCase()
+      .includes(query.toLowerCase());
+    const matchesFilter = filter
+      ? question.tags[0].name.toLowerCase() === filter.toLowerCase()
+      : true;
+    return matchesQuery && matchesFilter;
+  });
 
   return (
     <>
@@ -84,11 +92,11 @@ const Home = async ({ searchParams }: SearchParams) => {
           otherClasses="flex-1"
         />
       </section>
-      HomeFilter
+      <HomeFilter />
       <div className="mt-10 flex w-full flex-col gap-6">
         {filteredQuestions.map((question) => (
-          <h1 key={question._id}>{question.title}</h1>
-          // <QuestionCard key={question._id} question={question} />
+          // <h1 key={question._id}>{question.title}</h1>
+          <QuestionCard key={question._id} question={question} />
         ))}
       </div>
     </>
