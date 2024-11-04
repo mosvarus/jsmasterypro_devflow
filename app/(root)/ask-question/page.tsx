@@ -1,7 +1,8 @@
 import React from "react";
 
+import QuestionForm from "@/components/forms/QuestionForm";
 const page = () => {
-  return <div>page</div>;
+  return <QuestionForm />;
 };
 
 export default page;
